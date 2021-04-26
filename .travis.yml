@@ -1,0 +1,18 @@
+sudo: required
+
+language: bash
+
+services:
+  - docker
+
+script:
+  - docker build -t matze025/toolbox:latest -t matze025/toolbox:1.0.$TRAVIS_BUILD_NUMBER .
+
+after_success:
+  - 'echo "On Branch: $TRAVIS_BRANCH"'
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then
+    echo "pushing to hub";
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+    docker push matze025/toolbox:1.0.$TRAVIS_BUILD_NUMBER;
+    docker push matze025/toolbox:latest;
+    fi
